@@ -2,11 +2,18 @@ from ursina import *
 app = Ursina()
 
 from ursina.prefabs.platformer_controller_2d import PlatformerController2d
-player = PlatformerController2d(y=1, z=.01, scale_y=1, max_jumps=2)
+player = PlatformerController2d(y=1, z=.01, scale_y=1, max_jumps=1)
 
-camera.orthographic = True
-camera.position = (30/2,8)
-camera.fov = 16
+push_box = Entity(
+    model='cube',
+    color=color.brown,
+    collider='box',
+    position=(16, 8.5, 5),
+    scale=(1, 1, 1),
+    name="push_box"
+)
+
+ground = Entity(model='quad', scale_x=10, collider='box', color=color.black)
 
 
 quad = load_model('quad', use_deepcopy=True)
@@ -42,10 +49,15 @@ def make_level(texture):
                 player.start_position = (x, y)
                 player.position = player.start_position
 
+
     level_parent.model.generate()
 
 make_level(load_texture('platformer_tutorial_level'))   # generate the level
 
+camera.orthographic = True
+camera.position = (30/2,8)
+camera.fov = 16
 
 
+EditorCamera()
 app.run()
