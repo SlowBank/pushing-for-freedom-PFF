@@ -3,12 +3,11 @@ app = Ursina()
 
 from ursina.prefabs.platformer_controller_2d import PlatformerController2d
 player = PlatformerController2d(y=1, z=.01, scale_y=1, max_jumps=1)
-
 push_box = Entity(
     model='cube',
     color=color.brown,
     collider='box',
-    position=(16, 8.5, 5),
+    position=(16, 8.5, -.1),
     scale=(1, 1, 1),
     name="push_box"
 )
@@ -49,7 +48,6 @@ def make_level(texture):
                 player.start_position = (x, y)
                 player.position = player.start_position
 
-
     level_parent.model.generate()
 
 make_level(load_texture('platformer_tutorial_level'))   # generate the level
@@ -57,6 +55,19 @@ make_level(load_texture('platformer_tutorial_level'))   # generate the level
 camera.orthographic = True
 camera.position = (30/2,8)
 camera.fov = 16
+
+player.traverse_target = level_parent
+
+def update():
+    hinfo = player.intersects(push_box)  
+    if hinfo.hit:
+        print('Hit: ', hinfo.point.x)
+        if hinfo.point.x < 0:
+            push_box.position += (.2, 0, 0)
+        elif hinfo.point.x > 0:
+             push_box.position -= (.2, 0, 0)
+        else:
+            print("Zero?")
 
 
 EditorCamera()
